@@ -4,6 +4,11 @@ import * as cheerio from "cheerio";
 
 const app = express();
 
+// Ruta raíz
+app.get("/", (req, res) => {
+  res.send("✅ Nuvio-ES está funcionando correctamente en Railway.");
+});
+
 // Manifest
 app.get("/manifest.json", (req, res) => {
   res.json({
