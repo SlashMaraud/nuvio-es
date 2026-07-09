@@ -139,7 +139,7 @@ app.get("/catalog/:type/:id", async (req, res) => {
       id: "nuvio:pelisflix:12345",
       type: "movie",
       name: "Película de prueba Castellano",
-      poster: "https://nuvio-es-production.up.railway.app/poster.jpg",
+      poster: "https://via.placeholder.com/400x600.png?text=Pel%C3%ADcula+Prueba",
       year: 2023,
       imdb_id: null,
       tmdb: null
