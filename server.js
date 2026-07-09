@@ -63,41 +63,76 @@ app.get("/addon.json", (req, res) => {
   });
 });
 
-// Scraper Pelisflix (ejemplo)
+// Scraper Pelisflix con headers y logs
 async function scrapePelisflix(siteId) {
   const url = `https://pelisflix200.cc/ver/${siteId}`;
   console.log("Scraping Pelisflix URL:", url);
-  const res = await fetch(url, { timeout: 15000 }).catch(err => {
+  const res = await fetch(url, {
+    headers: {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+      "Referer": "https://pelisflix200.cc/"
+    },
+    timeout: 15000
+  }).catch(err => {
     console.error("Fetch error Pelisflix:", err && err.message);
     return null;
   });
   if (!res) return null;
   const html = await res.text();
   console.log("Pelisflix HTML length:", html.length);
+  console.log("Pelisflix HTML head:", html.slice(0, 1000));
   const $ = cheerio.load(html);
-  const iframe = $("iframe").attr("src") || $("video source").attr("src") || null;
+
+  let iframe = $("iframe").attr("src") || $("div.player iframe").attr("src") || $("video source").attr("src") || null;
+
+  if (!iframe) {
+    const dataSrc = $("[data-src]").attr("data-src");
+    if (dataSrc) iframe = dataSrc;
+  }
+
+  if (iframe && iframe.startsWith("//")) iframe = "https:" + iframe;
+  if (iframe && iframe.startsWith("/")) iframe = "https://pelisflix200.cc" + iframe;
+
+  console.log("Pelisflix extracted iframe:", iframe);
   return iframe;
 }
 
-// Scraper PelisHD24 (ejemplo)
+// Scraper PelisHD24 con headers y logs
 async function scrapePelisHD24(siteId) {
   const url = `https://pelishd24.com/pelicula/${siteId}`;
   console.log("Scraping PelisHD24 URL:", url);
-  const res = await fetch(url, { timeout: 15000 }).catch(err => {
+  const res = await fetch(url, {
+    headers: {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+      "Referer": "https://pelishd24.com/"
+    },
+    timeout: 15000
+  }).catch(err => {
     console.error("Fetch error PelisHD24:", err && err.message);
     return null;
   });
   if (!res) return null;
   const html = await res.text();
   console.log("PelisHD24 HTML length:", html.length);
+  console.log("PelisHD24 HTML head:", html.slice(0, 1000));
   const $ = cheerio.load(html);
-  const iframe = $("iframe").attr("src") || $("video source").attr("src") || null;
+
+  let iframe = $("iframe").attr("src") || $("div.player iframe").attr("src") || $("video source").attr("src") || null;
+
+  if (!iframe) {
+    const dataSrc = $("[data-src]").attr("data-src");
+    if (dataSrc) iframe = dataSrc;
+  }
+
+  if (iframe && iframe.startsWith("//")) iframe = "https:" + iframe;
+  if (iframe && iframe.startsWith("/")) iframe = "https://pelishd24.com" + iframe;
+
+  console.log("PelisHD24 extracted iframe:", iframe);
   return iframe;
 }
 
 // Catálogo mínimo para que Stremio descubra items
 app.get("/catalog/:type/:id", async (req, res) => {
-  // type: movie o series, id: página o categoría
   const items = [
     {
       id: "nuvio:pelisflix:12345",
@@ -115,10 +150,22 @@ app.get("/catalog/:type/:id", async (req, res) => {
   });
 });
 
-// Stream handler que entiende ids del catálogo y otros formatos
+// Stream handler con stream de prueba y scrapers reales
 app.get("/stream/:id", async (req, res) => {
-  const id = req.params.id; // ejemplo: "nuvio:pelisflix:12345" o "12345"
+  const id = req.params.id;
   try {
+    if (id === "nuvio:pelisflix:12345") {
+      return res.json({
+        streams: [
+          {
+            name: "Prueba Nuvio - BigBuckBunny (MP4)",
+            url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            info: { quality: "720p", language: "es" }
+          }
+        ]
+      });
+    }
+
     const parts = id.split(":");
     let streams = [];
 
@@ -134,7 +181,6 @@ app.get("/stream/:id", async (req, res) => {
         if (url) streams.push({ name: "PelisHD24 (Castellano)", url });
       }
     } else {
-      // Intento directo con el id como siteId en Pelisflix
       const url = await scrapePelisflix(id).catch(() => null);
       if (url) streams.push({ name: "Pelisflix (Castellano)", url });
     }
@@ -149,18 +195,4 @@ app.get("/stream/:id", async (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Servidor Nuvio-ES escuchando en puerto ${PORT}`);
-});
-
-app.get("/catalog/movie/1", (req, res) => {
-  return res.json({
-    metas: [
-      {
-        id: "nuvio:pelisflix:12345",
-        type: "movie",
-        name: "Película de prueba Castellano",
-        poster: "https://via.placeholder.com/400x600.png?text=Pel%C3%ADcula+Prueba",
-        year: 2023
-      }
-    ]
-  });
 });
