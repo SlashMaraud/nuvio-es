@@ -6,7 +6,7 @@ const app = express();
 
 // Ruta raíz
 app.get("/", (req, res) => {
-  res.send("✅ Nuvio-ES está funcionando correctamente en Railway.");
+  res.send("Nuvio-ES funcionando en Railway.");
 });
 
 // Manifest
