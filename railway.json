@@ -8,5 +8,11 @@
         }
       }
     }
+  },
+  "deploy": {
+    "startCommand": "node server.js"
+  },
+  "env": {
+    "PORT": "3000"
   }
 }
