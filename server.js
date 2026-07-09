@@ -150,3 +150,17 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Servidor Nuvio-ES escuchando en puerto ${PORT}`);
 });
+
+app.get("/catalog/movie/1", (req, res) => {
+  return res.json({
+    metas: [
+      {
+        id: "nuvio:pelisflix:12345",
+        type: "movie",
+        name: "Película de prueba Castellano",
+        poster: "https://via.placeholder.com/400x600.png?text=Pel%C3%ADcula+Prueba",
+        year: 2023
+      }
+    ]
+  });
+});
