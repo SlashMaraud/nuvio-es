@@ -159,7 +159,7 @@ app.get("/stream/:id", async (req, res) => {
         streams: [
           {
             name: "Prueba Nuvio - BigBuckBunny (MP4)",
-            url: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+            url: "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4",
             info: { quality: "720p", language: "es" }
           }
         ]
@@ -195,4 +195,19 @@ app.get("/stream/:id", async (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Servidor Nuvio-ES escuchando en puerto ${PORT}`);
+});
+
+app.get("/stream/:id", async (req, res) => {
+  if (req.params.id === "nuvio:pelisflix:12345") {
+    return res.json({
+      streams: [
+        {
+          name: "Prueba Nuvio - Test MP4",
+          url: "$NEW_URL",
+          info: { quality: "720p", language: "es" }
+        }
+      ]
+    });
+  }
+  return res.json({ streams: [] });
 });
