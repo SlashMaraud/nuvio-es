@@ -4,12 +4,10 @@ import * as cheerio from "cheerio";
 
 const app = express();
 
-// Ruta raíz
 app.get("/", (req, res) => {
   res.send("Nuvio-ES funcionando en Railway.");
 });
 
-// Manifest
 app.get("/manifest.json", (req, res) => {
   res.json({
     id: "nuvio.es",
@@ -29,7 +27,6 @@ app.get("/manifest.json", (req, res) => {
   });
 });
 
-// Addon
 app.get("/addon.json", (req, res) => {
   res.json({
     id: "nuvio.es",
@@ -49,7 +46,6 @@ app.get("/addon.json", (req, res) => {
   });
 });
 
-// Scraper Pelisflix
 async function scrapePelisflix(id) {
   const url = `https://pelisflix200.cc/ver/${id}`;
   const html = await fetch(url).then(r => r.text());
@@ -57,7 +53,6 @@ async function scrapePelisflix(id) {
   return $("iframe").attr("src");
 }
 
-// Scraper PelisHD24
 async function scrapePelisHD24(id) {
   const url = `https://pelishd24.com/pelicula/${id}`;
   const html = await fetch(url).then(r => r.text());
@@ -65,7 +60,6 @@ async function scrapePelisHD24(id) {
   return $("iframe").attr("src");
 }
 
-// Endpoint de streams
 app.get("/stream/:id", async (req, res) => {
   const id = req.params.id;
 
@@ -91,5 +85,4 @@ app.get("/stream/:id", async (req, res) => {
   res.json({ streams });
 });
 
-// Puerto
 app.listen(process.env.PORT || 3000);
