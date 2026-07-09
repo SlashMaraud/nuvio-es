@@ -159,7 +159,7 @@ app.get("/stream/:id", async (req, res) => {
         streams: [
           {
             name: "Prueba Nuvio - BigBuckBunny (MP4)",
-            url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            url: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
             info: { quality: "720p", language: "es" }
           }
         ]
