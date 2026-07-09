@@ -3,6 +3,7 @@ import fetch from "node-fetch";
 import cheerio from "cheerio";
 
 const app = express();
+app.use(express.static('public'));
 
 // CORS básico
 app.use((req, res, next) => {
@@ -138,7 +139,7 @@ app.get("/catalog/:type/:id", async (req, res) => {
       id: "nuvio:pelisflix:12345",
       type: "movie",
       name: "Película de prueba Castellano",
-      poster: "https://via.placeholder.com/400x600.png?text=Pel%C3%ADcula+Prueba",
+      poster: "https://nuvio-es-production.up.railway.app/poster.jpg",
       year: 2023,
       imdb_id: null,
       tmdb: null
